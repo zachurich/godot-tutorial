@@ -4,9 +4,9 @@ extends KinematicBody2D
 
 # func _ready():
 # 	print('hello world')
-const ACCELERATION = 25
-const MAX_SPEED = 100
-const FRICTION = 45
+const ACCELERATION = 600
+const MAX_SPEED = 80
+const FRICTION = 700
 
 var velocity = Vector2.ZERO
 
@@ -30,14 +30,14 @@ func _physics_process(delta):
 
   #* When you have something that needs to change over time, multiply by delta :)
 	if input_vector != Vector2.ZERO:
-		velocity += input_vector * ACCELERATION * delta
-		velocity = velocity.limit_length(MAX_SPEED * delta)
+		velocity = velocity.move_toward(input_vector * MAX_SPEED, ACCELERATION * delta)
 	else: 
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 
 	print(velocity)
 		
-	move_and_collide(velocity)
+	var new_velocity = move_and_slide(velocity)
+	velocity = new_velocity
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
