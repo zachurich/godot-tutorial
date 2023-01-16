@@ -9,6 +9,15 @@ const MAX_SPEED = 80
 const FRICTION = 700
 
 var velocity = Vector2.ZERO
+var lastDirection = "right";
+
+onready var animationPlayer = $AnimationPlayer
+
+#This is long form for onready var
+#var animationPlayer = null
+#func _ready():
+#	animationPlayer = $AnimationPlayer
+	
 
 func _physics_process(delta):
 	#* Manual case tree for ref
@@ -30,8 +39,20 @@ func _physics_process(delta):
 
   #* When you have something that needs to change over time, multiply by delta :)
 	if input_vector != Vector2.ZERO:
+		if input_vector.x > 0:
+			lastDirection = "right"
+		elif input_vector.x < 0:
+			lastDirection = "left"
+			
+		if input_vector.y > 0:
+			lastDirection = "down";
+		elif input_vector.y < 0:
+			lastDirection = "up";
+
+		animationPlayer.play("run_{direction}".format({"direction": lastDirection}))
 		velocity = velocity.move_toward(input_vector * MAX_SPEED, ACCELERATION * delta)
 	else: 
+		animationPlayer.play("idle_{direction}".format({"direction": lastDirection}))
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 
 	print(velocity)
